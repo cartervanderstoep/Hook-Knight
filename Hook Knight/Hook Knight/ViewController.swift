@@ -1,21 +1,23 @@
 //
-//  GameViewController.swift
+//  ViewController.swift
 //  Hook Knight
 //
 //  Created by Game Design Shared on 3/28/19.
 //  Copyright © 2019 Game Design Shared. All rights reserved.
 //
 
-import UIKit
+import Cocoa
 import SpriteKit
 import GameplayKit
 
-class GameViewController: UIViewController {
+class ViewController: NSViewController {
 
+    @IBOutlet var skView: SKView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if let view = self.view as! SKView? {
+
+        if let view = self.skView {
             // Load the SKScene from 'GameScene.sks'
             if let scene = SKScene(fileNamed: "GameScene") {
                 // Set the scale mode to scale to fit the window
@@ -31,25 +33,5 @@ class GameViewController: UIViewController {
             view.showsNodeCount = true
         }
     }
-
-    override var shouldAutorotate: Bool {
-        return true
-    }
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return .allButUpsideDown
-        } else {
-            return .all
-        }
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Release any cached data, images, etc that aren't in use.
-    }
-
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
 }
+
