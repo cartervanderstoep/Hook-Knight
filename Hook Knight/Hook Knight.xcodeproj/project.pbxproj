@@ -17,6 +17,7 @@
 		9F6787B3224D58DA0056DAE9 /* Hook_KnightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6787B2224D58DA0056DAE9 /* Hook_KnightTests.swift */; };
 		9F6787BE224D58DA0056DAE9 /* Hook_KnightUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6787BD224D58DA0056DAE9 /* Hook_KnightUITests.swift */; };
 		9F77581B22529BED0033CA1B /* random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F77581A22529BED0033CA1B /* random.swift */; };
+		9FCD4FA422553D88005EFE91 /* HookKnightClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCD4FA322553D88005EFE91 /* HookKnightClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		9F6787BD224D58DA0056DAE9 /* Hook_KnightUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hook_KnightUITests.swift; sourceTree = "<group>"; };
 		9F6787BF224D58DA0056DAE9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9F77581A22529BED0033CA1B /* random.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = random.swift; sourceTree = "<group>"; };
+		9FCD4FA322553D88005EFE91 /* HookKnightClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HookKnightClass.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 				9F6787A5224D58DA0056DAE9 /* Main.storyboard */,
 				9F6787A8224D58DA0056DAE9 /* Info.plist */,
 				9F6787A9224D58DA0056DAE9 /* Hook_Knight.entitlements */,
+				9FCD4FA322553D88005EFE91 /* HookKnightClass.swift */,
 			);
 			path = "Hook Knight";
 			sourceTree = "<group>";
@@ -270,6 +273,7 @@
 			files = (
 				9F77581B22529BED0033CA1B /* random.swift in Sources */,
 				9F6787A2224D58DA0056DAE9 /* ViewController.swift in Sources */,
+				9FCD4FA422553D88005EFE91 /* HookKnightClass.swift in Sources */,
 				9F6787A0224D58DA0056DAE9 /* GameScene.swift in Sources */,
 				9F67879A224D58DA0056DAE9 /* AppDelegate.swift in Sources */,
 			);

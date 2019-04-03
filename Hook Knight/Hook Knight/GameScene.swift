@@ -14,11 +14,20 @@ class GameScene: SKScene {
     var gameStart:Bool = true
     
     var screenPassed:Bool=false
+    var upPressed:Bool=false
+    var downPressed:Bool=false
+    var rightPressed:Bool=false
+    var leftPressed:Bool=false
     
+    var blockPlacement:Int=0
+    var player=HookKnightClass()
     
     override func didMove(to view: SKView) {
         
-            makeLevel()
+        addChild(player.sprite)
+       
+        
+        makeLevel()
         
     }
     
@@ -59,6 +68,19 @@ class GameScene: SKScene {
                 }
             }
             makeLevel()
+        case 13:
+            upPressed=true
+            
+        case 1:
+            downPressed=true
+            
+        case 2:
+            rightPressed=true
+            
+        case 0:
+            leftPressed=true
+            
+            
             
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
@@ -66,39 +88,73 @@ class GameScene: SKScene {
        
     }
     
+    
+    override func keyUp(with event: NSEvent) {
+        switch event.keyCode {
+            
+        
+        case 13:
+            upPressed=false
+            
+        case 1:
+            downPressed=false
+            
+        case 2:
+            rightPressed=false
+            
+        case 0:
+            leftPressed=false
+            
+            
+            
+        default:
+            print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
+        }
+        
+    }
+    
+    
+    
     func makeLevel()
     {
         
             var height:Int=0
             var hole:Bool=false
-            for platform in 0...8
+            for platform in 0...7
             {
                 let spawnChance = random(min: 0, max: 1)
-                if spawnChance > 0.75
+                if spawnChance > 0.85
                 {
-                    height += 1
+                    height += 3
                 }
-                else if spawnChance > 0.5
+                else if spawnChance > 0.7
                 {
                     height += 0
                 }
-                else if spawnChance > 0.25
+                else if spawnChance > 0.4
                 {
-                    height -= 1
+                    height -= 3
                 }
                 else
                 {
                     hole=true
                 }
+                
+                if platform==0
+                {
+                    height=blockPlacement
+                    
+                }
+                
                 if height < 0
                 {
                     height = 0
                 }
-                if height > 8
+                if height > 6
                 {
-                    height=8
+                    height=6
                 }
-                if !hole
+                if !hole || platform==7 || platform==0
                 {
                     let block=SKSpriteNode(imageNamed: "platformA")
                     block.position=gridOut(x:platform, y: height)
@@ -110,18 +166,55 @@ class GameScene: SKScene {
                     hole=false
                 }
             }// for loop
+        blockPlacement=height
         
     }// make level
     
     func gridOut(x: Int, y: Int) -> CGPoint
     {
         var retPoint=CGPoint()
-        retPoint.x=CGFloat(x)*64+32-size.width/2
+        retPoint.x=CGFloat(x)*128+64-size.width/2
         retPoint.y=CGFloat(y)*64-32-size.height/4
         return retPoint
     }
     
+    func checkKeys()
+    {
+        if upPressed==true
+        {
+            player.sprite.position.y+=10
+        }
+        
+        if downPressed==true
+        {
+            player.sprite.position.y-=10
+        }
+        if rightPressed==true
+        {
+            player.sprite.position.x+=10
+        }
+        if leftPressed==true
+        {
+            player.sprite.position.x-=10
+        }
+        
+    }
+    
+    func checkBoundaries()
+    {
+        if player.sprite.position.x-32>size.width/2
+        {
+            player.sprite.position.x = -size.width/2.5
+        
+        }
+    }
+    
+    
+    
+    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        checkKeys()
+        checkBoundaries()
     }
 }
