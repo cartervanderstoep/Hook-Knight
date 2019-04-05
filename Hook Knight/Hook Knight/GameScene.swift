@@ -9,6 +9,15 @@
 import SpriteKit
 import GameplayKit
 
+
+struct physTypes
+{
+    static let None:UInt32 =    0b00000000
+    static let Player:UInt32 =    0b00000001
+    static let Ground:UInt32 =    0b00000010
+}
+
+
 class GameScene: SKScene {
     
     var gameStart:Bool = true
@@ -60,13 +69,7 @@ class GameScene: SKScene {
         switch event.keyCode {
             
         case 15:
-            for node in self.children
-            {
-                if node.name!=="block"
-                {
-                    node.removeFromParent()
-                }
-            }
+           
             makeLevel()
         case 13:
             upPressed=true
@@ -117,6 +120,16 @@ class GameScene: SKScene {
     
     func makeLevel()
     {
+        for node in self.children
+        {
+            if node.name != nil
+            {
+                if node.name!=="block"
+                {
+                    node.removeFromParent()
+                }
+            }
+        }
         
             var height:Int=0
             var hole:Bool=false
@@ -143,7 +156,8 @@ class GameScene: SKScene {
                 if platform==0
                 {
                     height=blockPlacement
-                    
+                    player.sprite.position.y = CGFloat(height)*64+32-size.height/4
+                    player.sprite.position.x = -size.width/2.2 + 25
                 }
                 
                 if height < 0
@@ -167,7 +181,7 @@ class GameScene: SKScene {
                 }
             }// for loop
         blockPlacement=height
-        
+       
     }// make level
     
     func gridOut(x: Int, y: Int) -> CGPoint
@@ -204,7 +218,7 @@ class GameScene: SKScene {
     {
         if player.sprite.position.x-32>size.width/2
         {
-            player.sprite.position.x = -size.width/2.5
+            makeLevel()
         
         }
     }
