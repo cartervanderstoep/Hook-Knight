@@ -12,9 +12,10 @@ import GameplayKit
 
 struct physTypes
 {
-    static let None:UInt32 =    0b00000000
+    static let None:UInt32 =      0b00000000
     static let Player:UInt32 =    0b00000001
     static let Ground:UInt32 =    0b00000010
+    static let Death:UInt32 =     0b00000100
 }// phystypes
 
 
@@ -34,23 +35,63 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var player=HookKnightClass()
     
+    var deathBlock=SKSpriteNode(imageNamed: "deathMote")
+    
     override func didMove(to view: SKView) {
         
         physicsWorld.contactDelegate = self as SKPhysicsContactDelegate
         player.sprite.physicsBody=SKPhysicsBody(rectangleOf:player.sprite.size)
         player.sprite.physicsBody!.categoryBitMask=physTypes.Player
+        player.sprite.physicsBody!.collisionBitMask=physTypes.Ground
         player.sprite.physicsBody!.allowsRotation=false
         player.sprite.physicsBody!.affectedByGravity=true
         player.sprite.physicsBody!.isDynamic=true
-        
-        
-        
         addChild(player.sprite)
-       player.sprite.name="player"
+        player.sprite.name="player"
+        player.sprite.isHidden=false
+        
+        
+        deathBlock.position.y = -size.height/2 + deathBlock.size.height-32
+        deathBlock.zPosition=6
+        deathBlock.physicsBody=SKPhysicsBody(rectangleOf: deathBlock.size)
+        deathBlock.physicsBody!.categoryBitMask=physTypes.Death
+        deathBlock.physicsBody!.contactTestBitMask=physTypes.Player
+        deathBlock.physicsBody!.collisionBitMask=physTypes.None
+        deathBlock.physicsBody!.affectedByGravity=false
+        deathBlock.physicsBody!.allowsRotation=false
+        deathBlock.physicsBody!.isDynamic=false
+        addChild(deathBlock)
+        deathBlock.name="death barrier"
         
         makeLevel()
         
     }// didmove
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        
+        var firstBody:SKPhysicsBody
+        var secondBody:SKPhysicsBody
+        
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask
+        {
+            firstBody = contact.bodyA
+            secondBody = contact.bodyB
+        }
+        else
+        {
+            firstBody = contact.bodyB
+            secondBody = contact.bodyA
+        }
+        
+        if firstBody.node!.name != nil && secondBody.node!.name != nil
+        {
+            if firstBody.node!.name!.contains("player") && secondBody.node!.name!.contains("death")
+            {
+                player.sprite.isHidden=true
+            }
+        }
+        
+    }// didBegin
     
     
     func touchDown(atPoint pos : CGPoint) {
@@ -170,6 +211,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     height=blockPlacement
                     player.sprite.position.y = CGFloat(height)*64+32-size.height/4
                     player.sprite.position.x = -size.width/2.2 + 25
+                    player.sprite.physicsBody!.velocity = .zero
+                    player.sprite.isHidden=false
                 }// if platform = 0
                 
                 if height < 0
@@ -214,10 +257,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        
     
         
-        if upPressed==true && -lastJump.timeIntervalSinceNow > 2.0
+        if upPressed==true && -lastJump.timeIntervalSinceNow > 0.8
         {
             
-            player.sprite.physicsBody!.applyImpulse(CGVector(dx: 0, dy: 10))
+            player.sprite.physicsBody!.applyImpulse(CGVector(dx: 0, dy: 90))
             lastJump = NSDate()
         }
             else
