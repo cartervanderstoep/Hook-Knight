@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9F3077BD22665AFA004F299B /* beetleClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3077BC22665AFA004F299B /* beetleClass.swift */; };
+		9F3077BF2266617D004F299B /* baseEnemyFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3077BE2266617D004F299B /* baseEnemyFile.swift */; };
 		9F67879A224D58DA0056DAE9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F678799224D58DA0056DAE9 /* AppDelegate.swift */; };
 		9F67879C224D58DA0056DAE9 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 9F67879B224D58DA0056DAE9 /* GameScene.sks */; };
 		9F67879E224D58DA0056DAE9 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 9F67879D224D58DA0056DAE9 /* Actions.sks */; };
@@ -38,6 +40,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9F3077BC22665AFA004F299B /* beetleClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beetleClass.swift; sourceTree = "<group>"; };
+		9F3077BE2266617D004F299B /* baseEnemyFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = baseEnemyFile.swift; sourceTree = "<group>"; };
 		9F678796224D58DA0056DAE9 /* Hook Knight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hook Knight.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F678799224D58DA0056DAE9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9F67879B224D58DA0056DAE9 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -117,6 +121,8 @@
 				9F6787A8224D58DA0056DAE9 /* Info.plist */,
 				9F6787A9224D58DA0056DAE9 /* Hook_Knight.entitlements */,
 				9FCD4FA322553D88005EFE91 /* HookKnightClass.swift */,
+				9F3077BC22665AFA004F299B /* beetleClass.swift */,
+				9F3077BE2266617D004F299B /* baseEnemyFile.swift */,
 			);
 			path = "Hook Knight";
 			sourceTree = "<group>";
@@ -272,6 +278,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				9F77581B22529BED0033CA1B /* random.swift in Sources */,
+				9F3077BD22665AFA004F299B /* beetleClass.swift in Sources */,
+				9F3077BF2266617D004F299B /* baseEnemyFile.swift in Sources */,
 				9F6787A2224D58DA0056DAE9 /* ViewController.swift in Sources */,
 				9FCD4FA422553D88005EFE91 /* HookKnightClass.swift in Sources */,
 				9F6787A0224D58DA0056DAE9 /* GameScene.swift in Sources */,

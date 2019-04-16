@@ -16,6 +16,7 @@ struct physTypes
     static let Player:UInt32 =    0b00000001
     static let Ground:UInt32 =    0b00000010
     static let Death:UInt32 =     0b00000100
+    static let Enemy:UInt32 =     0b00001000
 }// phystypes
 
 
@@ -35,7 +36,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var player=HookKnightClass()
     
+    var deetleEnemy=beetleClass()
+    
     var deathBlock=SKSpriteNode(imageNamed: "deathMote")
+    
+    var leftBarrier=SKSpriteNode(imageNamed: "barrier")
     
     override func didMove(to view: SKView) {
         
@@ -51,6 +56,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.sprite.isHidden=false
         
         
+        deetleEnemy.sprite.physicsBody=SKPhysicsBody(rectangleOf: deetleEnemy.sprite.size)
+        
+        
         deathBlock.position.y = -size.height/2 + deathBlock.size.height-32
         deathBlock.zPosition=6
         deathBlock.physicsBody=SKPhysicsBody(rectangleOf: deathBlock.size)
@@ -62,6 +70,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         deathBlock.physicsBody!.isDynamic=false
         addChild(deathBlock)
         deathBlock.name="death barrier"
+        
+        leftBarrier.position.x = -size.width/1.87 + leftBarrier.size.width + 5
+        leftBarrier.physicsBody=SKPhysicsBody(rectangleOf: leftBarrier.size)
+        leftBarrier.physicsBody!.categoryBitMask=physTypes.Ground
+        leftBarrier.physicsBody!.affectedByGravity=false
+        leftBarrier.physicsBody!.allowsRotation=false
+        leftBarrier.physicsBody!.isDynamic=false
+        addChild(leftBarrier)
+        leftBarrier.name="leftScreenBarrier"
+        
         
         makeLevel()
         
