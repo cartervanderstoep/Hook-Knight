@@ -36,13 +36,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var player=HookKnightClass()
     
-    var deetleEnemy=beetleClass()
+    var deetleEnemy:beetleClass?
     
     var deathBlock=SKSpriteNode(imageNamed: "deathMote")
     
     var leftBarrier=SKSpriteNode(imageNamed: "barrier")
     
+    var entList=[baseEnemyClass]()
+    
     override func didMove(to view: SKView) {
+        
+        //deetleEnemy=beetleClass(theScene: self)
         
         physicsWorld.contactDelegate = self as SKPhysicsContactDelegate
         player.sprite.physicsBody=SKPhysicsBody(rectangleOf:player.sprite.size)
@@ -51,12 +55,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.sprite.physicsBody!.allowsRotation=false
         player.sprite.physicsBody!.affectedByGravity=true
         player.sprite.physicsBody!.isDynamic=true
+       
         addChild(player.sprite)
         player.sprite.name="player"
         player.sprite.isHidden=false
         
         
-        deetleEnemy.sprite.physicsBody=SKPhysicsBody(rectangleOf: deetleEnemy.sprite.size)
+       
         
         
         deathBlock.position.y = -size.height/2 + deathBlock.size.height-32
@@ -107,6 +112,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 player.sprite.isHidden=true
             }
+            
         }
         
     }// didBegin
@@ -191,6 +197,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func makeLevel()
     {
+        for ents in entList
+        {
+            ents.sprite.removeFromParent()
+        }
+        entList.removeAll()
         for node in self.children
         {
             if node.name != nil
@@ -252,6 +263,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     block.physicsBody!.affectedByGravity=false
                     block.physicsBody!.allowsRotation=false
                     block.name="block"
+                    if platform != 0
+                    {
+                        let tempbeetleClass = beetleClass(theScene: self)
+                        entList.append(tempbeetleClass)
+                        tempbeetleClass.sprite.position.x=block.position.x
+                        tempbeetleClass.sprite.position.y=block.position.y+100
+                        print("Ent")
+                        tempbeetleClass.sprite.zPosition=10
+                    }
+                    
                 }
                 else
                 {
@@ -319,5 +340,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         checkKeys()
         checkBoundaries()
+        //deetleEnemy!.update()
     }
 }

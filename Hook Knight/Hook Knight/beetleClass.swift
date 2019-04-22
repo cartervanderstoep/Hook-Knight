@@ -14,7 +14,6 @@ import SpriteKit
 
 class beetleClass:baseEnemyClass
 {
-    var sprite=SKSpriteNode(imageNamed:"Deetle")
     
     
     
@@ -29,13 +28,19 @@ class beetleClass:baseEnemyClass
         super.init(theScene: theScene)
         scene=theScene
         speed=10
+        sprite=SKSpriteNode(imageNamed:"Deetle")
+        scene!.addChild(sprite)
+        sprite.name="deetle"
+        sprite.physicsBody=SKPhysicsBody(rectangleOf:sprite.size)
+        sprite.physicsBody!.categoryBitMask=physTypes.Enemy
+        sprite.physicsBody!.collisionBitMask=physTypes.Ground | physTypes.Player
+        sprite.physicsBody!.allowsRotation=false
+        sprite.physicsBody!.affectedByGravity=true
+        sprite.physicsBody!.isDynamic=true
+        sprite.isHidden=false
         
     }
     
-    func move()
-    {
-        
-    }
     
     
     
@@ -49,7 +54,6 @@ class beetleClass:baseEnemyClass
     
     
     
-    override func update() {
     
-    }
+
 }
