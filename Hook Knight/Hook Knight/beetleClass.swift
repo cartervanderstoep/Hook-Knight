@@ -14,8 +14,9 @@ import SpriteKit
 
 class beetleClass:baseEnemyClass
 {
+    var startingSpeed=CGVector(dx: 50, dy: 0)
     
-    
+    var lastTurnCheck=NSDate()
     
     override init()
     {
@@ -39,6 +40,64 @@ class beetleClass:baseEnemyClass
         sprite.physicsBody!.isDynamic=true
         sprite.isHidden=false
         
+        if startDirection > 0.5
+        {
+            startingSpeed.dx *= -1
+        }
+        
+    }
+    
+    
+    
+    
+    override func move()
+    {
+        
+        var turn:Bool=true
+        
+            if sprite.physicsBody!.velocity.dx < 100
+            {
+                sprite.physicsBody!.applyForce(startingSpeed)
+            }
+    
+       
+            if sprite.physicsBody!.velocity.dx > -100
+            {
+                sprite.physicsBody!.applyForce(startingSpeed)
+            }
+        
+        
+        if -lastTurnCheck.timeIntervalSinceNow>0.25
+        {
+            for this in scene!.children
+            {
+                if this.name != nil
+                {
+                    if this.name!.contains("block")
+                    {
+                        
+                        
+                        if this.contains(CGPoint(x: sprite.position.x + 33, y: sprite.position.y - 40))
+                        {
+                            turn = false
+                            print("Right edge")
+                        }
+                        else if this.contains(CGPoint(x: sprite.position.x - 33, y: sprite.position.y - 40))
+                        {
+                            turn=false
+                            print("Left edge")
+                        }
+                        
+                        if turn
+                        {
+                            startingSpeed.dx *= -1
+                        }
+                     
+                    }
+                }
+            }
+             lastTurnCheck=NSDate()
+        }
     }
     
     
@@ -47,13 +106,10 @@ class beetleClass:baseEnemyClass
     
     
     
-    
-    
-    
-    
-    
-    
-    
+    override func update() {
+        move()
+       
+    }
     
 
 }

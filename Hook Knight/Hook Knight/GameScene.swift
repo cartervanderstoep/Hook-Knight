@@ -10,17 +10,17 @@ import SpriteKit
 import GameplayKit
 
 
-struct physTypes
+public struct physTypes
 {
-    static let None:UInt32 =      0b00000000
-    static let Player:UInt32 =    0b00000001
-    static let Ground:UInt32 =    0b00000010
-    static let Death:UInt32 =     0b00000100
-    static let Enemy:UInt32 =     0b00001000
+    public static let None:UInt32 =      0b00000000
+    public static let Player:UInt32 =    0b00000001
+    public static let Ground:UInt32 =    0b00000010
+    public static let Death:UInt32 =     0b00000100
+    public static let Enemy:UInt32 =     0b00001000
 }// phystypes
 
 
-class GameScene: SKScene, SKPhysicsContactDelegate {
+ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var gameStart:Bool = true
     
@@ -112,7 +112,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             {
                 player.sprite.isHidden=true
             }
-            
+            else if firstBody.node!.name!.contains("tempBeetle") && !secondBody.node!.name!.contains("ground")
+            {
+                
+            }
         }
         
     }// didBegin
@@ -271,6 +274,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         tempbeetleClass.sprite.position.y=block.position.y+100
                         print("Ent")
                         tempbeetleClass.sprite.zPosition=10
+                        tempbeetleClass.sprite.name="tempBeetle"
                     }
                     
                 }
@@ -340,6 +344,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         checkKeys()
         checkBoundaries()
-        //deetleEnemy!.update()
+        for ent in entList
+        {
+            ent.update()
+        }
     }
 }
