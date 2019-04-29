@@ -29,6 +29,7 @@ public struct physTypes
     var downPressed:Bool=false
     var rightPressed:Bool=false
     var leftPressed:Bool=false
+    var playerDead:Bool=false
     
     var blockPlacement:Int=0
     
@@ -108,12 +109,37 @@ public struct physTypes
         
         if firstBody.node!.name != nil && secondBody.node!.name != nil
         {
+            
             if firstBody.node!.name!.contains("player") && secondBody.node!.name!.contains("death")
             {
                 player.sprite.isHidden=true
+                
             }
-            else if firstBody.node!.name!.contains("tempBeetle") && !secondBody.node!.name!.contains("ground")
+  
+             if firstBody.node!.name!.contains("player") && secondBody.node!.name!.contains("deetle")
             {
+                print("Player - Beetle")
+                
+                if firstBody.node!.position.y-firstBody.node!.frame.size.height/2 >= secondBody.node!.position.y+secondBody.node!.frame.size.height/4
+                {
+                    print("i should be dead")
+                    var index:Int=0
+                    for i in 0 ..< entList.count
+                    {
+                        if secondBody.node! == entList[i].sprite
+                        {
+                            index=i
+                        }
+                    } // for
+                    entList[index].die()
+                    entList.remove(at: index)
+                    
+                }
+                else
+                {
+                    player.sprite.isHidden=true
+                  
+                }
                 
             }
         }
@@ -245,6 +271,8 @@ public struct physTypes
                     player.sprite.position.x = -size.width/2.2 + 25
                     player.sprite.physicsBody!.velocity = .zero
                     player.sprite.isHidden=false
+                    
+                    
                 }// if platform = 0
                 
                 if height < 0
@@ -274,7 +302,7 @@ public struct physTypes
                         tempbeetleClass.sprite.position.y=block.position.y+100
                         print("Ent")
                         tempbeetleClass.sprite.zPosition=10
-                        tempbeetleClass.sprite.name="tempBeetle"
+                        //tempbeetleClass.sprite.name="tempBeetle"
                     }
                     
                 }

@@ -34,6 +34,7 @@ class beetleClass:baseEnemyClass
         sprite.name="deetle"
         sprite.physicsBody=SKPhysicsBody(rectangleOf:sprite.size)
         sprite.physicsBody!.categoryBitMask=physTypes.Enemy
+        sprite.physicsBody!.contactTestBitMask=physTypes.Player
         sprite.physicsBody!.collisionBitMask=physTypes.Ground | physTypes.Player
         sprite.physicsBody!.allowsRotation=false
         sprite.physicsBody!.affectedByGravity=true
@@ -45,59 +46,10 @@ class beetleClass:baseEnemyClass
             startingSpeed.dx *= -1
         }
         
-    }
-    
-    
-    
-    
-    override func move()
-    {
+        let patrol = SKAction.sequence([SKAction.move(by: CGVector(dx: 64, dy: 0), duration: 1), SKAction.move(by: CGVector(dx: -64, dy: 0), duration: 1)])
         
-        var turn:Bool=true
+        sprite.run(SKAction.repeatForever(patrol))
         
-            if sprite.physicsBody!.velocity.dx < 100
-            {
-                sprite.physicsBody!.applyForce(startingSpeed)
-            }
-    
-       
-            if sprite.physicsBody!.velocity.dx > -100
-            {
-                sprite.physicsBody!.applyForce(startingSpeed)
-            }
-        
-        
-        if -lastTurnCheck.timeIntervalSinceNow>0.25
-        {
-            for this in scene!.children
-            {
-                if this.name != nil
-                {
-                    if this.name!.contains("block")
-                    {
-                        
-                        
-                        if this.contains(CGPoint(x: sprite.position.x + 33, y: sprite.position.y - 40))
-                        {
-                            turn = false
-                            print("Right edge")
-                        }
-                        else if this.contains(CGPoint(x: sprite.position.x - 33, y: sprite.position.y - 40))
-                        {
-                            turn=false
-                            print("Left edge")
-                        }
-                        
-                        if turn
-                        {
-                            startingSpeed.dx *= -1
-                        }
-                     
-                    }
-                }
-            }
-             lastTurnCheck=NSDate()
-        }
     }
     
     
@@ -107,7 +59,7 @@ class beetleClass:baseEnemyClass
     
     
     override func update() {
-        move()
+       
        
     }
     

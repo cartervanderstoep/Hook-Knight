@@ -57,7 +57,10 @@ class baseEnemyClass
         }
     }
     
-    
+    func die()
+    {
+        sprite.removeFromParent()
+    }
 
     func update() {
         move()
