@@ -12,11 +12,14 @@ import GameplayKit
 
 public struct physTypes
 {
-    public static let None:UInt32 =      0b00000000
-    public static let Player:UInt32 =    0b00000001
-    public static let Ground:UInt32 =    0b00000010
-    public static let Death:UInt32 =     0b00000100
-    public static let Enemy:UInt32 =     0b00001000
+    static let None:UInt32 =      0b00000000
+    static let Player:UInt32 =    0b00000001
+    static let Ground:UInt32 =    0b00000010
+    static let Death:UInt32 =     0b00000100
+    static let Enemy:UInt32 =     0b00001000
+    static let Item:UInt32 =      0b00010000
+    static let Line:UInt32 =      0b00100000
+    
 }// phystypes
 
 
@@ -30,8 +33,10 @@ public struct physTypes
     var rightPressed:Bool=false
     var leftPressed:Bool=false
     var playerDead:Bool=false
+    var zipLineGet=false
     
     var blockPlacement:Int=0
+    var stageCount:Int=1
     
     var lastJump=NSDate()
     
@@ -42,6 +47,10 @@ public struct physTypes
     var deathBlock=SKSpriteNode(imageNamed: "deathMote")
     
     var leftBarrier=SKSpriteNode(imageNamed: "barrier")
+    
+    var itemIcon=SKSpriteNode(imageNamed: "zipIcon")
+    
+    var abilityUse=SKSpriteNode(imageNamed: "zipline")
     
     var entList=[baseEnemyClass]()
     
@@ -177,6 +186,9 @@ public struct physTypes
         case 15:
            
             makeLevel()
+            stageCount=1
+            
+            
         case 49:
             upPressed=true
             
@@ -247,15 +259,15 @@ public struct physTypes
             for platform in 0...7
             {
                 let spawnChance = random(min: 0, max: 1)
-                if spawnChance > 0.85
+                if spawnChance > 0.8
                 {
                     height += 3
                 }
-                else if spawnChance > 0.7
+                else if spawnChance > 0.65
                 {
                     height += 0
                 }
-                else if spawnChance > 0.4
+                else if spawnChance > 0.35
                 {
                     height -= 3
                 }
@@ -298,11 +310,11 @@ public struct physTypes
                     {
                         let tempbeetleClass = beetleClass(theScene: self)
                         entList.append(tempbeetleClass)
-                        tempbeetleClass.sprite.position.x=block.position.x
-                        tempbeetleClass.sprite.position.y=block.position.y+100
+                        tempbeetleClass.sprite.position.x=block.position.x+64
+                        tempbeetleClass.sprite.position.y=block.position.y+50
                         print("Ent")
                         tempbeetleClass.sprite.zPosition=10
-                        //tempbeetleClass.sprite.name="tempBeetle"
+                        tempbeetleClass.sprite.name="tempBeetle"
                     }
                     
                 }
@@ -331,7 +343,7 @@ public struct physTypes
         if upPressed==true && -lastJump.timeIntervalSinceNow > 0.8
         {
             
-            player.sprite.physicsBody!.applyImpulse(CGVector(dx: 0, dy: 90))
+            player.sprite.physicsBody!.applyImpulse(CGVector(dx: 0, dy: 85))
             lastJump = NSDate()
         }
             else
@@ -341,15 +353,15 @@ public struct physTypes
             
             if downPressed==true
             {
-                player.sprite.position.y-=10
+                player.sprite.position.y-=5
             }
             if rightPressed==true
             {
-                player.sprite.position.x+=10
+                player.sprite.position.x+=7
             }
             if leftPressed==true
             {
-                player.sprite.position.x-=10
+                player.sprite.position.x-=7
             }
     }
         
@@ -360,7 +372,33 @@ public struct physTypes
         if player.sprite.position.x-32>size.width/2
         {
             makeLevel()
+            stageCount+=1
         
+        }
+    }
+    
+    func placeItem()
+    {
+        if stageCount==10
+        {
+            itemIcon.physicsBody = SKPhysicsBody(rectangleOf: itemIcon.size)
+            itemIcon.physicsBody!.categoryBitMask=physTypes.Item
+            itemIcon.physicsBody!.contactTestBitMask=physTypes.Player
+            itemIcon.physicsBody!.isDynamic=false
+            itemIcon.physicsBody!.affectedByGravity=false
+            itemIcon.physicsBody!.allowsRotation=false
+            itemIcon.zPosition=5
+            addChild(itemIcon)
+        }
+    }
+    
+    
+    func zipLine()
+    {
+        
+        if zipLineGet==true
+        {
+            
         }
     }
     
@@ -369,8 +407,10 @@ public struct physTypes
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        
-        checkKeys()
+        if player.sprite.isHidden==false
+        {
+            checkKeys()
+        }
         checkBoundaries()
         for ent in entList
         {

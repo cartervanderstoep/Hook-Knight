@@ -32,7 +32,7 @@ class beetleClass:baseEnemyClass
         sprite=SKSpriteNode(imageNamed:"Deetle")
         scene!.addChild(sprite)
         sprite.name="deetle"
-        sprite.physicsBody=SKPhysicsBody(rectangleOf:sprite.size)
+        sprite.physicsBody=SKPhysicsBody(texture: sprite.texture!, alphaThreshold: 0, size: sprite.size)
         sprite.physicsBody!.categoryBitMask=physTypes.Enemy
         sprite.physicsBody!.contactTestBitMask=physTypes.Player
         sprite.physicsBody!.collisionBitMask=physTypes.Ground | physTypes.Player
@@ -46,7 +46,11 @@ class beetleClass:baseEnemyClass
             startingSpeed.dx *= -1
         }
         
-        let patrol = SKAction.sequence([SKAction.move(by: CGVector(dx: 64, dy: 0), duration: 1), SKAction.move(by: CGVector(dx: -64, dy: 0), duration: 1)])
+       
+        
+        let patrol = SKAction.sequence([SKAction.move(by: CGVector(dx: -128, dy: 0), duration: 1.5), SKAction.move(by: CGVector(dx: 128, dy: 0), duration: 1.5)])
+        
+        
         
         sprite.run(SKAction.repeatForever(patrol))
         
