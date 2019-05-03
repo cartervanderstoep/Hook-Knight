@@ -37,6 +37,7 @@ public struct physTypes
     
     var blockPlacement:Int=0
     var stageCount:Int=1
+    var itemAmount:Int=0
     
     var lastJump=NSDate()
     
@@ -61,6 +62,7 @@ public struct physTypes
         physicsWorld.contactDelegate = self as SKPhysicsContactDelegate
         player.sprite.physicsBody=SKPhysicsBody(rectangleOf:player.sprite.size)
         player.sprite.physicsBody!.categoryBitMask=physTypes.Player
+        player.sprite.physicsBody!.contactTestBitMask=physTypes.Enemy
         player.sprite.physicsBody!.collisionBitMask=physTypes.Ground
         player.sprite.physicsBody!.allowsRotation=false
         player.sprite.physicsBody!.affectedByGravity=true
@@ -125,6 +127,7 @@ public struct physTypes
                 
             }
   
+
              if firstBody.node!.name!.contains("player") && secondBody.node!.name!.contains("deetle")
             {
                 print("Player - Beetle")
@@ -259,15 +262,15 @@ public struct physTypes
             for platform in 0...7
             {
                 let spawnChance = random(min: 0, max: 1)
-                if spawnChance > 0.8
+                if spawnChance > 0.7
                 {
                     height += 3
                 }
-                else if spawnChance > 0.65
+                else if spawnChance > 0.55
                 {
                     height += 0
                 }
-                else if spawnChance > 0.35
+                else if spawnChance > 0.25
                 {
                     height -= 3
                 }
@@ -314,7 +317,7 @@ public struct physTypes
                         tempbeetleClass.sprite.position.y=block.position.y+50
                         print("Ent")
                         tempbeetleClass.sprite.zPosition=10
-                        tempbeetleClass.sprite.name="tempBeetle"
+                        
                     }
                     
                 }
@@ -379,7 +382,7 @@ public struct physTypes
     
     func placeItem()
     {
-        if stageCount==10
+        if stageCount==10 && itemAmount < 1
         {
             itemIcon.physicsBody = SKPhysicsBody(rectangleOf: itemIcon.size)
             itemIcon.physicsBody!.categoryBitMask=physTypes.Item
@@ -389,7 +392,9 @@ public struct physTypes
             itemIcon.physicsBody!.allowsRotation=false
             itemIcon.zPosition=5
             addChild(itemIcon)
+            itemAmount+=1
         }
+        
     }
     
     
@@ -416,5 +421,6 @@ public struct physTypes
         {
             ent.update()
         }
+        placeItem()
     }
 }
