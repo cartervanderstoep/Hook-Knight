@@ -320,6 +320,11 @@ public struct physTypes
                         
                     }
                     
+                    if !hole || platform == 3 || platform == 5 || platform == 7
+                    {
+                        placeItem()
+                    }
+                    
                 }
                 else
                 {
@@ -421,6 +426,6 @@ public struct physTypes
         {
             ent.update()
         }
-        placeItem()
+        
     }
 }
