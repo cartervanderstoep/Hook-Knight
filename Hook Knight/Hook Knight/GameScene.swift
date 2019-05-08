@@ -18,7 +18,7 @@ public struct physTypes
     static let Death:UInt32 =     0b00000100
     static let Enemy:UInt32 =     0b00001000
     static let Item:UInt32 =      0b00010000
-    static let Line:UInt32 =      0b00100000
+    
     
 }// phystypes
 
@@ -34,10 +34,15 @@ public struct physTypes
     var leftPressed:Bool=false
     var playerDead:Bool=false
     var zipLineGet=false
+    var zipAllowed:Bool=true
+    
+    
     
     var blockPlacement:Int=0
     var stageCount:Int=1
     var itemAmount:Int=0
+    var damageTaken:Int=3
+    
     
     var lastJump=NSDate()
     
@@ -64,6 +69,7 @@ public struct physTypes
         player.sprite.physicsBody!.categoryBitMask=physTypes.Player
         player.sprite.physicsBody!.contactTestBitMask=physTypes.Enemy
         player.sprite.physicsBody!.collisionBitMask=physTypes.Ground
+        player.sprite.physicsBody!.contactTestBitMask=physTypes.Item
         player.sprite.physicsBody!.allowsRotation=false
         player.sprite.physicsBody!.affectedByGravity=true
         player.sprite.physicsBody!.isDynamic=true
@@ -98,6 +104,16 @@ public struct physTypes
         leftBarrier.name="leftScreenBarrier"
         
         
+        abilityUse.physicsBody=SKPhysicsBody(rectangleOf: abilityUse.size)
+        abilityUse.physicsBody!.categoryBitMask=physTypes.Ground
+        abilityUse.physicsBody!.isDynamic=false
+        abilityUse.physicsBody!.affectedByGravity=false
+        abilityUse.physicsBody!.allowsRotation=false
+       
+        
+        abilityUse.name="ability"
+        
+        
         makeLevel()
         
     }// didmove
@@ -111,28 +127,40 @@ public struct physTypes
         {
             firstBody = contact.bodyA
             secondBody = contact.bodyB
-        }
+        }//if a is less than b
         else
         {
             firstBody = contact.bodyB
             secondBody = contact.bodyA
-        }
+        }//else
         
         if firstBody.node!.name != nil && secondBody.node!.name != nil
         {
             
             if firstBody.node!.name!.contains("player") && secondBody.node!.name!.contains("death")
             {
-                player.sprite.isHidden=true
+               player.sprite.isHidden=true
+                if zipLineGet==true
+                {
+                    zipLineGet=false
+                }
                 
-            }
+            }// if you hit the death barrier
+            
+            if firstBody.node!.name!.contains("player") && secondBody.node!.name!.contains("yarn")
+            {
+                print("collected")
+                
+                itemIcon.removeFromParent()
+                zipLineGet=true
+            }// if you run into the yarn
   
 
              if firstBody.node!.name!.contains("player") && secondBody.node!.name!.contains("deetle")
             {
                 print("Player - Beetle")
                 
-                if firstBody.node!.position.y-firstBody.node!.frame.size.height/2 >= secondBody.node!.position.y+secondBody.node!.frame.size.height/4
+                if firstBody.node!.position.y-firstBody.node!.frame.size.height/2 >= secondBody.node!.position.y+secondBody.node!.frame.size.height/5
                 {
                     print("i should be dead")
                     var index:Int=0
@@ -142,19 +170,19 @@ public struct physTypes
                         {
                             index=i
                         }
-                    } // for
+                    } // for loop
                     entList[index].die()
                     entList.remove(at: index)
                     
-                }
+                }// if you and on a deetle
                 else
                 {
+                    
                     player.sprite.isHidden=true
-                  
                 }
                 
-            }
-        }
+            }// if you make contact with a deetle
+        }// if there are names for the bodies
         
     }// didBegin
     
@@ -190,6 +218,8 @@ public struct physTypes
            
             makeLevel()
             stageCount=1
+            itemIcon.removeFromParent()
+            zipLineGet=false
             
             
         case 49:
@@ -203,12 +233,16 @@ public struct physTypes
             
         case 0:
             leftPressed=true
+        case 8:
+            zipAllowed=true
+            zipLine()
+            
             
             
             
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
-        }
+        }// switch statement
        
     }// keydown
     
@@ -228,12 +262,13 @@ public struct physTypes
             
         case 0:
             leftPressed=false
+        
             
             
             
         default:
             print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
-        }
+        }// another switch statement
         
     }// key up
     
@@ -241,6 +276,7 @@ public struct physTypes
     
     func makeLevel()
     {
+        itemAmount=0
         for ents in entList
         {
             ents.sprite.removeFromParent()
@@ -318,14 +354,11 @@ public struct physTypes
                         print("Ent")
                         tempbeetleClass.sprite.zPosition=10
                         
-                    }
+                    }// spawning deetles on every platform except the first one
                     
-                    if !hole || platform == 3 || platform == 5 || platform == 7
-                    {
-                        placeItem()
-                    }
                     
-                }
+                    
+                }//  block generation
                 else
                 {
                     hole=false
@@ -341,19 +374,19 @@ public struct physTypes
         retPoint.x=CGFloat(x)*128+64-size.width/2
         retPoint.y=CGFloat(y)*64-32-size.height/4
         return retPoint
-    }
+    }// gridout function
     
     func checkKeys()
     {
        
     
         
-        if upPressed==true && -lastJump.timeIntervalSinceNow > 0.8
+        if upPressed==true && -lastJump.timeIntervalSinceNow > 0.7
         {
             
             player.sprite.physicsBody!.applyImpulse(CGVector(dx: 0, dy: 85))
             lastJump = NSDate()
-        }
+        }// if you press jump
             else
             {
                 upPressed=false
@@ -371,7 +404,7 @@ public struct physTypes
             {
                 player.sprite.position.x-=7
             }
-    }
+    }// check keys function
         
     
     
@@ -381,35 +414,70 @@ public struct physTypes
         {
             makeLevel()
             stageCount+=1
+            print(stageCount)
+            zipAllowed=false
+            
         
-        }
-    }
+        }// if you go off the right side of the screen
+    }// check boundaries function
     
     func placeItem()
     {
-        if stageCount==10 && itemAmount < 1
-        {
-            itemIcon.physicsBody = SKPhysicsBody(rectangleOf: itemIcon.size)
-            itemIcon.physicsBody!.categoryBitMask=physTypes.Item
-            itemIcon.physicsBody!.contactTestBitMask=physTypes.Player
-            itemIcon.physicsBody!.isDynamic=false
-            itemIcon.physicsBody!.affectedByGravity=false
-            itemIcon.physicsBody!.allowsRotation=false
-            itemIcon.zPosition=5
-            addChild(itemIcon)
-            itemAmount+=1
-        }
+       // if stageCount == 10
+       // {
+            if  itemAmount < 1 && player.sprite.isHidden==false && zipLineGet==false
+            {
+                itemIcon.physicsBody = SKPhysicsBody(rectangleOf: itemIcon.size)
+                itemIcon.physicsBody!.categoryBitMask=physTypes.Item
+                itemIcon.physicsBody!.contactTestBitMask=physTypes.Player
+                itemIcon.physicsBody!.collisionBitMask=physTypes.Player
+                itemIcon.physicsBody!.isDynamic=false
+                itemIcon.physicsBody!.affectedByGravity=false
+                itemIcon.physicsBody!.allowsRotation=false
+                itemIcon.zPosition=5
+                addChild(itemIcon)
+                itemIcon.name="yarn"
+                itemAmount+=1
+            }// spawning  the yarn
+            else if player.sprite.isHidden==true
+            {
+                itemIcon.removeFromParent()
+            }
+       // } // if you reach stage ten
         
-    }
+        
+    } // place item function
     
     
     func zipLine()
     {
+    
         
         if zipLineGet==true
         {
+            let tempAbilityUse=abilityUse
             
-        }
+            tempAbilityUse.position.x = player.sprite.position.x
+            tempAbilityUse.position.y = player.sprite.position.y - 40
+            tempAbilityUse.zPosition=10
+            
+            if zipAllowed==true
+            {
+                addChild(tempAbilityUse)
+            }
+                
+                
+                if zipAllowed==false
+                {
+                    print ("delete")
+                    tempAbilityUse.removeFromParent()
+                    
+                    
+                }
+            }
+           
+            
+        
     }
     
     
@@ -426,6 +494,8 @@ public struct physTypes
         {
             ent.update()
         }
+        placeItem()
+        
         
     }
 }
