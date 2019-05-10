@@ -34,14 +34,16 @@ public struct physTypes
     var leftPressed:Bool=false
     var playerDead:Bool=false
     var zipLineGet=false
-    var zipAllowed:Bool=true
+    
+    var zipPressed:Bool=false
     
     
     
     var blockPlacement:Int=0
     var stageCount:Int=1
     var itemAmount:Int=0
-    var damageTaken:Int=3
+    var damageTaken:Int=0
+    var zipCount:Int=0
     
     
     var lastJump=NSDate()
@@ -58,7 +60,14 @@ public struct physTypes
     
     var abilityUse=SKSpriteNode(imageNamed: "zipline")
     
+    var shield1=SKSpriteNode(imageNamed: "health1")
+    
+    var shield2=SKSpriteNode(imageNamed: "health2")
+    
+    var shield3=SKSpriteNode(imageNamed: "health3")
+    
     var entList=[baseEnemyClass]()
+    
     
     override func didMove(to view: SKView) {
         
@@ -113,6 +122,18 @@ public struct physTypes
         
         abilityUse.name="ability"
         
+        shield1.position.y = size.height/2.5
+        shield1.position.x = -size.width/2.3
+        addChild(shield1)
+        
+        shield2.position.y = size.height/2.5
+        shield2.position.x = -size.width/2.3 + 90
+        addChild(shield2)
+        
+        shield3.position.y = size.height/2.5
+        shield3.position.x = -size.width/2.3 + 180
+        addChild(shield3)
+        
         
         makeLevel()
         
@@ -159,26 +180,48 @@ public struct physTypes
              if firstBody.node!.name!.contains("player") && secondBody.node!.name!.contains("deetle")
             {
                 print("Player - Beetle")
-                
+                 var index:Int=0
+                for i in 0 ..< entList.count
+                {
+                    if secondBody.node! == entList[i].sprite
+                    {
+                        index=i
+                    }
+                } // for loop
                 if firstBody.node!.position.y-firstBody.node!.frame.size.height/2 >= secondBody.node!.position.y+secondBody.node!.frame.size.height/5
                 {
                     print("i should be dead")
-                    var index:Int=0
-                    for i in 0 ..< entList.count
-                    {
-                        if secondBody.node! == entList[i].sprite
-                        {
-                            index=i
-                        }
-                    } // for loop
+                   
+                   
                     entList[index].die()
                     entList.remove(at: index)
                     
-                }// if you and on a deetle
+                }// if you land on a deetle
                 else
                 {
+                    entList[index].die()
+                    entList.remove(at: index)
+                    damageTaken+=1
+                    print(damageTaken)
                     
-                    player.sprite.isHidden=true
+                    player.sprite.physicsBody!.applyImpulse(CGVector(dx: -25, dy: 30))
+                    
+                    if damageTaken==1
+                    {
+                        shield3.isHidden=true
+                    }
+                    
+                    if damageTaken==2
+                    {
+                        shield2.isHidden=true
+                    }
+                    
+                    if damageTaken == 3
+                    {
+                        player.sprite.isHidden=true
+                        shield1.isHidden=true
+                    }
+                    
                 }
                 
             }// if you make contact with a deetle
@@ -219,6 +262,11 @@ public struct physTypes
             makeLevel()
             stageCount=1
             itemIcon.removeFromParent()
+            shield3.isHidden=false
+            shield2.isHidden=false
+            shield1.isHidden=false
+            damageTaken=0
+            
             zipLineGet=false
             
             
@@ -234,8 +282,8 @@ public struct physTypes
         case 0:
             leftPressed=true
         case 8:
-            zipAllowed=true
-            zipLine()
+            
+            zipPressed=true
             
             
             
@@ -263,6 +311,7 @@ public struct physTypes
         case 0:
             leftPressed=false
         
+            
             
             
             
@@ -415,7 +464,8 @@ public struct physTypes
             makeLevel()
             stageCount+=1
             print(stageCount)
-            zipAllowed=false
+            itemIcon.removeFromParent()
+            
             
         
         }// if you go off the right side of the screen
@@ -439,11 +489,12 @@ public struct physTypes
                 itemIcon.name="yarn"
                 itemAmount+=1
             }// spawning  the yarn
-            else if player.sprite.isHidden==true
+            else if player.sprite.isHidden==true || player.sprite.position.x > size.width
             {
                 itemIcon.removeFromParent()
             }
-       // } // if you reach stage ten
+        
+      // } // if you reach stage ten
         
         
     } // place item function
@@ -452,33 +503,41 @@ public struct physTypes
     func zipLine()
     {
     
+        let tempAbilityUse=abilityUse
         
         if zipLineGet==true
         {
-            let tempAbilityUse=abilityUse
             
-            tempAbilityUse.position.x = player.sprite.position.x
-            tempAbilityUse.position.y = player.sprite.position.y - 40
+            var zipPointX:CGFloat=player.sprite.position.x
+            var zipPointY:CGFloat=player.sprite.position.y - 50
             tempAbilityUse.zPosition=10
             
-            if zipAllowed==true
+            if zipPressed == true && zipCount<1
             {
                 addChild(tempAbilityUse)
-            }
+                tempAbilityUse.position.x = zipPointX
+                tempAbilityUse.position.y = zipPointY
+                zipCount+=1
+            }// if we can place a zipline
                 
                 
-                if zipAllowed==false
+                if player.sprite.position.x > size.width/2
                 {
                     print ("delete")
                     tempAbilityUse.removeFromParent()
-                    
-                    
-                }
-            }
-           
+                    zipCount=0
+                    zipPressed=false
+                }// if the player goes off the right edge of the screen.
             
-        
-    }
+            }// if you grap the zipline
+        else if zipLineGet==false
+        {
+            tempAbilityUse.removeFromParent()
+            zipCount=0
+            zipPressed=false
+        }// if you dont have the zipline
+       
+    }// zipline function
     
     
     
@@ -495,7 +554,8 @@ public struct physTypes
             ent.update()
         }
         placeItem()
+        zipLine()
         
         
-    }
-}
+    }// update
+}// literally the entire game
