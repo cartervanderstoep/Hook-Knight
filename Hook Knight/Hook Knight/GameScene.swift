@@ -66,7 +66,15 @@ public struct physTypes
     
     var shield3=SKSpriteNode(imageNamed: "health3")
     
+    var scenery=SKSpriteNode(imageNamed: "background1")
+    
+    var cerbpup=SKSpriteNode(imageNamed: "reward")
+    
+    var finalScreen=SKSpriteNode(imageNamed: "endingscreen")
+    
     var entList=[baseEnemyClass]()
+    
+    var endText=SKLabelNode(text: "You did it, you saved your pet cerberus")
     
     
     override func didMove(to view: SKView) {
@@ -122,18 +130,35 @@ public struct physTypes
         
         abilityUse.name="ability"
         
-        shield1.position.y = size.height/2.5
-        shield1.position.x = -size.width/2.3
+        shield1.position.y = size.height/3
+        shield1.position.x = -size.width/2.5
         addChild(shield1)
         
-        shield2.position.y = size.height/2.5
-        shield2.position.x = -size.width/2.3 + 90
+        shield2.position.y = size.height/3
+        shield2.position.x = -size.width/2.5 + 90
         addChild(shield2)
         
-        shield3.position.y = size.height/2.5
-        shield3.position.x = -size.width/2.3 + 180
+        shield3.position.y = size.height/3
+        shield3.position.x = -size.width/2.5 + 180
         addChild(shield3)
         
+        scenery.zPosition = -1
+        addChild(scenery)
+        
+        finalScreen.zPosition=100
+        addChild(finalScreen)
+        finalScreen.isHidden=true
+        
+        cerbpup.zPosition=120
+        cerbpup.position.y = -size.height/4
+        cerbpup.isHidden=true
+        addChild(cerbpup)
+        
+        endText.fontSize=80
+        endText.zPosition=120
+        endText.position.y = size.height/4
+        addChild(endText)
+        endText.isHidden=true
         
         makeLevel()
         
@@ -173,6 +198,10 @@ public struct physTypes
                 print("collected")
                 
                 itemIcon.removeFromParent()
+                damageTaken=0
+                shield3.isHidden=false
+                shield2.isHidden=false
+                shield1.isHidden=false
                 zipLineGet=true
             }// if you run into the yarn
   
@@ -209,18 +238,24 @@ public struct physTypes
                     if damageTaken==1
                     {
                         shield3.isHidden=true
+                        
                     }
+                    
                     
                     if damageTaken==2
                     {
                         shield2.isHidden=true
+                        
                     }
+                    
                     
                     if damageTaken == 3
                     {
                         player.sprite.isHidden=true
                         shield1.isHidden=true
+                        
                     }
+                    
                     
                 }
                 
@@ -325,95 +360,98 @@ public struct physTypes
     
     func makeLevel()
     {
-        itemAmount=0
-        for ents in entList
+        if stageCount < 2
         {
-            ents.sprite.removeFromParent()
-        }
-        entList.removeAll()
-        for node in self.children
-        {
-            if node.name != nil
+            itemAmount=0
+            for ents in entList
             {
-                if node.name!=="block"
-                {
-                    node.removeFromParent()
-                }
-            }// if node isnt nil
-        }// for node in self
-        
-            var height:Int=0
-            var hole:Bool=false
-            for platform in 0...7
+                ents.sprite.removeFromParent()
+            }
+            entList.removeAll()
+            for node in self.children
             {
-                let spawnChance = random(min: 0, max: 1)
-                if spawnChance > 0.7
+                if node.name != nil
                 {
-                    height += 3
-                }
-                else if spawnChance > 0.55
-                {
-                    height += 0
-                }
-                else if spawnChance > 0.25
-                {
-                    height -= 3
-                }
-                else
-                {
-                    hole=true
-                }
-                
-                if platform==0
-                {
-                    height=blockPlacement
-                    player.sprite.position.y = CGFloat(height)*64+32-size.height/4
-                    player.sprite.position.x = -size.width/2.2 + 25
-                    player.sprite.physicsBody!.velocity = .zero
-                    player.sprite.isHidden=false
-                    
-                    
-                }// if platform = 0
-                
-                if height < 0
-                {
-                    height = 0
-                }
-                if height > 6
-                {
-                    height=6
-                }
-                if !hole || platform==7 || platform==0
-                {
-                    let block=SKSpriteNode(imageNamed: "platformA")
-                    block.position=gridOut(x:platform, y: height)
-                    addChild(block)
-                    block.physicsBody=SKPhysicsBody(rectangleOf: block.size)
-                    block.physicsBody!.categoryBitMask=physTypes.Ground
-                    block.physicsBody!.isDynamic=false
-                    block.physicsBody!.affectedByGravity=false
-                    block.physicsBody!.allowsRotation=false
-                    block.name="block"
-                    if platform != 0
+                    if node.name!=="block"
                     {
-                        let tempbeetleClass = beetleClass(theScene: self)
-                        entList.append(tempbeetleClass)
-                        tempbeetleClass.sprite.position.x=block.position.x+64
-                        tempbeetleClass.sprite.position.y=block.position.y+50
-                        print("Ent")
-                        tempbeetleClass.sprite.zPosition=10
-                        
-                    }// spawning deetles on every platform except the first one
-                    
-                    
-                    
-                }//  block generation
-                else
+                        node.removeFromParent()
+                    }
+                }// if node isnt nil
+            }// for node in self
+            
+                var height:Int=0
+                var hole:Bool=false
+                for platform in 0...7
                 {
-                    hole=false
-                }
-            }// for loop
-        blockPlacement=height
+                    let spawnChance = random(min: 0, max: 1)
+                    if spawnChance > 0.7
+                    {
+                        height += 3
+                    }
+                    else if spawnChance > 0.55
+                    {
+                        height += 0
+                    }
+                    else if spawnChance > 0.25
+                    {
+                        height -= 3
+                    }
+                    else
+                    {
+                        hole=true
+                    }
+                    
+                    if platform==0
+                    {
+                        height=blockPlacement
+                        player.sprite.position.y = CGFloat(height)*64+32-size.height/4
+                        player.sprite.position.x = -size.width/2.2 + 25
+                        player.sprite.physicsBody!.velocity = .zero
+                        player.sprite.isHidden=false
+                        
+                        
+                    }// if platform = 0
+                    
+                    if height < 0
+                    {
+                        height = 0
+                    }
+                    if height > 6
+                    {
+                        height=6
+                    }
+                    if !hole || platform==7 || platform==0
+                    {
+                        let block=SKSpriteNode(imageNamed: "platformA")
+                        block.position=gridOut(x:platform, y: height)
+                        addChild(block)
+                        block.physicsBody=SKPhysicsBody(rectangleOf: block.size)
+                        block.physicsBody!.categoryBitMask=physTypes.Ground
+                        block.physicsBody!.isDynamic=false
+                        block.physicsBody!.affectedByGravity=false
+                        block.physicsBody!.allowsRotation=false
+                        block.name="block"
+                        if platform != 0
+                        {
+                            let tempbeetleClass = beetleClass(theScene: self)
+                            entList.append(tempbeetleClass)
+                            tempbeetleClass.sprite.position.x=block.position.x+64
+                            tempbeetleClass.sprite.position.y=block.position.y+50
+                            print("Ent")
+                            tempbeetleClass.sprite.zPosition=10
+                            
+                        }// spawning deetles on every platform except the first one
+                        
+                        
+                        
+                    }//  block generation
+                    else
+                    {
+                        hole=false
+                    }
+                }// for loop
+            blockPlacement=height
+        }// make the level until you win
        
     }// make level
     
@@ -473,8 +511,8 @@ public struct physTypes
     
     func placeItem()
     {
-       // if stageCount == 10
-       // {
+        if stageCount == 1
+        {
             if  itemAmount < 1 && player.sprite.isHidden==false && zipLineGet==false
             {
                 itemIcon.physicsBody = SKPhysicsBody(rectangleOf: itemIcon.size)
@@ -488,13 +526,14 @@ public struct physTypes
                 addChild(itemIcon)
                 itemIcon.name="yarn"
                 itemAmount+=1
+                
             }// spawning  the yarn
             else if player.sprite.isHidden==true || player.sprite.position.x > size.width
             {
                 itemIcon.removeFromParent()
             }
         
-      // } // if you reach stage ten
+       } // if you reach stage ten
         
         
     } // place item function
@@ -542,20 +581,33 @@ public struct physTypes
     
     
     
+    
+    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        if player.sprite.isHidden==false
+        if stageCount<2
         {
-            checkKeys()
+            if player.sprite.isHidden==false
+            {
+                checkKeys()
+            }
+            checkBoundaries()
+            for ent in entList
+            {
+                ent.update()
+            }
+            placeItem()
+            zipLine()
+            
         }
-        checkBoundaries()
-        for ent in entList
+        else
         {
-            ent.update()
+            cerbpup.isHidden=false
+            endText.isHidden=false
+            finalScreen.isHidden=false
+           
+            
         }
-        placeItem()
-        zipLine()
-        
         
     }// update
 }// literally the entire game
