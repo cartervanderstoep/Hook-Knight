@@ -75,7 +75,7 @@ public struct physTypes
     var entList=[baseEnemyClass]()
     
     var endText=SKLabelNode(text: "You did it, you saved your pet cerberus")
-    
+
     
     override func didMove(to view: SKView) {
         
@@ -155,10 +155,14 @@ public struct physTypes
         addChild(cerbpup)
         
         endText.fontSize=80
+        endText.fontColor=NSColor.purple
+        endText.fontName="Apple Chancery"
         endText.zPosition=120
-        endText.position.y = size.height/4
+        endText.position.y = size.height/6
         addChild(endText)
         endText.isHidden=true
+        endText.numberOfLines=2
+        endText.preferredMaxLayoutWidth=800
         
         makeLevel()
         
@@ -184,7 +188,7 @@ public struct physTypes
         {
             
             if firstBody.node!.name!.contains("player") && secondBody.node!.name!.contains("death")
-            {
+            { 
                player.sprite.isHidden=true
                 if zipLineGet==true
                 {
@@ -253,6 +257,10 @@ public struct physTypes
                     {
                         player.sprite.isHidden=true
                         shield1.isHidden=true
+                        if zipLineGet==true
+                        {
+                            zipLineGet=false
+                        }
                         
                     }
                     
@@ -360,7 +368,7 @@ public struct physTypes
     
     func makeLevel()
     {
-        if stageCount < 2
+        if stageCount < 20
         {
             itemAmount=0
             for ents in entList
@@ -441,7 +449,7 @@ public struct physTypes
                             tempbeetleClass.sprite.zPosition=10
                             
                         }// spawning deetles on every platform except the first one
-                        
+                            
                         
                         
                     }//  block generation
@@ -497,7 +505,7 @@ public struct physTypes
     
     func checkBoundaries()
     {
-        if player.sprite.position.x-32>size.width/2
+        if player.sprite.position.x-32>size.width/2.2
         {
             makeLevel()
             stageCount+=1
@@ -511,7 +519,7 @@ public struct physTypes
     
     func placeItem()
     {
-        if stageCount == 1
+        if stageCount == 10
         {
             if  itemAmount < 1 && player.sprite.isHidden==false && zipLineGet==false
             {
@@ -522,13 +530,13 @@ public struct physTypes
                 itemIcon.physicsBody!.isDynamic=false
                 itemIcon.physicsBody!.affectedByGravity=false
                 itemIcon.physicsBody!.allowsRotation=false
-                itemIcon.zPosition=5
+                itemIcon.zPosition=11
                 addChild(itemIcon)
                 itemIcon.name="yarn"
                 itemAmount+=1
                 
             }// spawning  the yarn
-            else if player.sprite.isHidden==true || player.sprite.position.x > size.width
+            else if player.sprite.isHidden==true || player.sprite.position.x > size.width/2.3
             {
                 itemIcon.removeFromParent()
             }
@@ -560,7 +568,7 @@ public struct physTypes
             }// if we can place a zipline
                 
                 
-                if player.sprite.position.x > size.width/2
+                if player.sprite.position.x > size.width/2.2
                 {
                     print ("delete")
                     tempAbilityUse.removeFromParent()
@@ -585,7 +593,7 @@ public struct physTypes
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        if stageCount<2
+        if stageCount<20
         {
             if player.sprite.isHidden==false
             {
